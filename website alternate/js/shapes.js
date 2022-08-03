@@ -3,8 +3,17 @@ class Shape {
   constructor(xOffset, yOffset, sprite, isStatic, mouseCollide, angleScale, minAngleRange, maxAngleRange) {
     this.xOffset = xOffset;
     this.yOffset = yOffset;
-    this.x = characterX + this.xOffset * canvasScale;
-    this.y = characterY + this.yOffset * canvasScale;
+
+    this.x = characterX + this.xOffset;
+    this.y = characterY + this.yOffset;
+
+    // this.initialX = this.x;
+    // this.initialY = this.y;
+    // this.ratio = canvas.width / initalCanvasWidth;
+    // this.width
+
+    // console.log(this.ratio);
+
     this.sprite = sprite;
     this.w = this.sprite.width;
     this.h = this.sprite.height;
@@ -19,12 +28,12 @@ class Shape {
     this.minAngleRange = minAngleRange || .3;
     this.maxAngleRange = maxAngleRange || .3;
     this.tempVertices = null;
+
     this.pushScale = 0.05;
     this.force = 0;
     this.initialVertices = this.body.vertices;
     this.initialX = this.x;
     this.initialY = this.y;
-
 
     // Collion filtering
     if (this.mouseCollide == true) {
@@ -42,20 +51,22 @@ class Shape {
 
   // Moving logic
   move() {
+    // this.x = character.x + this.xOffset;
+    // this.y = character.y + this.yOffset;
+    // console.log(this.x)
+    // this.body.position.x = this.x;
+    // this.body.position.y = this.y;
     this.force = 0;
-    this.x = characterX + this.xOffset * canvasScale;
-    this.y = characterY + this.yOffset * canvasScale;
 
     // Creates a constraint when holding a joint
     if (holdingConstraint == null
       && this.mouseCollide == true
-      && canvas.width > maxCanvasWidth * 0.65
       && mouseDown == true
       && Bounds.contains(this.bounds, mouse.position)) {
       holdingConstraint = Constraint.create({
          pointB: mouse.position,
          bodyA: this.body,
-         stiffness: 0.002 * canvasScale
+         stiffness: 0.001
       });
       World.add(world, holdingConstraint);
     }
@@ -66,13 +77,21 @@ class Shape {
        Body.setAngularVelocity(this.body, this.force);
     }
 
-
     // Limits rotation
     if (this.body.angle <= this.initialAngle - this.minAngleRange) {
       this.body.angle = this.initialAngle - this.minAngleRange;
     } else if (this.body.angle > this.initialAngle + this.maxAngleRange) {
       this.body.angle = this.initialAngle + this.maxAngleRange;
     }
+
+    // // Updates the position of the shape
+    // this.ratio = canvas.width / initalCanvasWidth;
+    // console.log(this.ratio);
+    // this.x = this.body.position.x * this.ratio;
+    // this.y = this.body.position.y;
+    // this.body.position.x = this.x;
+    // this.body.position.y = this.y;
+
   }
 
   // Displays body parts
@@ -89,19 +108,20 @@ class Shape {
       strokeWeight(1);
       stroke(color(0, 255, 0));
       rectMode(CENTER);
-      quad((this.body.vertices[1].x - pos.x) * canvasScale, (this.body.vertices[1].y - pos.y) * canvasScale,
-           (this.body.vertices[2].x - pos.x) * canvasScale, (this.body.vertices[2].y - pos.y) * canvasScale,
-           (this.body.vertices[3].x - pos.x) * canvasScale, (this.body.vertices[3].y - pos.y) * canvasScale,
-           (this.body.vertices[0].x - pos.x) * canvasScale, (this.body.vertices[0].y - pos.y) * canvasScale);
+      quad(this.body.vertices[1].x - pos.x, this.body.vertices[1].y - pos.y,
+           this.body.vertices[2].x - pos.x, this.body.vertices[2].y - pos.y,
+           this.body.vertices[3].x - pos.x, this.body.vertices[3].y - pos.y,
+           this.body.vertices[0].x - pos.x, this.body.vertices[0].y - pos.y);
       pop();
     }
 
     // Draws the individual body parts
     push();
+
     translate(pos.x, pos.y);
     rotate(angle);
     imageMode(CENTER);
-    image(this.sprite, 0, 0, this.sprite.width * canvasScale, this.sprite.height * canvasScale);
+    image(this.sprite, 0, 0, this.sprite.width, this.sprite.height);
     pop();
   }
 }
@@ -112,8 +132,8 @@ class FaceShape {
     this.xOffset = xOffset;
     this.yOffset = yOffset;
 
-    this.x = characterX + this.xOffset * canvasScale;
-    this.y = characterY + this.yOffset * canvasScale;
+    this.x = characterX + this.xOffset;
+    this.y = characterY + this.yOffset;
 
     this.spriteSheet = spriteSheet;
     this.frameAmount = frameAmount;
@@ -134,6 +154,7 @@ class FaceShape {
 
     // Collion filtering
     if (this.mouseCollide == true) {
+      // console.log(1);
       this.body.collisionFilter = {
         category: objectCategory,
         mask: mouseCategory
@@ -149,9 +170,8 @@ class FaceShape {
   // Moving logic
   move() {
     // Updates the position of the shape
-    this.x = characterX + this.xOffset * canvasScale;
-    this.y = characterY + this.yOffset * canvasScale;
-
+    this.x = characterX + this.xOffset;
+    this.y = characterY + this.yOffset;
     if (holdingConstraint == null
     && this.mouseCollide == true
     && mouseDown == true
@@ -161,20 +181,18 @@ class FaceShape {
       this.forceBlink = true
 
       // Left eye collision
-      if (mouseX >= character.partEyes.body.position.x - (100 * canvasScale)
-      && mouseX <= character.partEyes.body.position.x - (15 * canvasScale)
-      && mouseY >= character.partEyes.body.position.y - (40 * canvasScale)
-      && mouseY <= character.partEyes.body.position.y + (20 * canvasScale)) {
-        // console.log(1);
+      if (mouseX >= character.partEyes.body.position.x - 50 - character.partEyes.r / 2
+      && mouseX <= character.partEyes.body.position.x - 50 + character.partEyes.r / 2
+      && mouseY >= character.partEyes.body.position.y - 30 - character.partEyes.r / 2
+      && mouseY <= character.partEyes.body.position.y - 30 + character.partEyes.r / 2) {
         this.leftFrameIndex = 3;
       }
 
       // Right eye collision
-      if (mouseX >= character.partEyes.body.position.x + (10 * canvasScale)
-      && mouseX <= character.partEyes.body.position.x + (80 * canvasScale)
-      && mouseY >= character.partEyes.body.position.y - (70 * canvasScale)
-      && mouseY <= character.partEyes.body.position.y - (5 * canvasScale)) {
-        // console.log(2);
+      if (mouseX >= character.partEyes.body.position.x + 40 - character.partEyes.r / 2
+      && mouseX <= character.partEyes.body.position.x + 40 + character.partEyes.r / 2
+      && mouseY >= character.partEyes.body.position.y - 30 - character.partEyes.r / 2
+      && mouseY <= character.partEyes.body.position.y - 30 + character.partEyes.r / 2) {
         this.rightFrameIndex = 3;
       }
     }
@@ -222,10 +240,10 @@ class FaceShape {
       strokeWeight(1);
       stroke(color(0, 255, 0));
       rectMode(CENTER);
-      quad((this.body.vertices[1].x - pos.x) * canvasScale, (this.body.vertices[1].y - pos.y) * canvasScale,
-           (this.body.vertices[2].x - pos.x) * canvasScale, (this.body.vertices[2].y - pos.y) * canvasScale,
-           (this.body.vertices[3].x - pos.x) * canvasScale, (this.body.vertices[3].y - pos.y) * canvasScale,
-           (this.body.vertices[0].x - pos.x) * canvasScale, (this.body.vertices[0].y - pos.y) * canvasScale);
+      quad(this.body.vertices[1].x - pos.x, this.body.vertices[1].y - pos.y,
+           this.body.vertices[2].x - pos.x, this.body.vertices[2].y - pos.y,
+           this.body.vertices[3].x - pos.x, this.body.vertices[3].y - pos.y,
+           this.body.vertices[0].x - pos.x, this.body.vertices[0].y - pos.y);
       pop();
     }
 
@@ -234,13 +252,12 @@ class FaceShape {
     translate(pos.x, pos.y);
     rotate(angle);
     imageMode(CENTER);
-
     // Left eye
     image(this.spriteSheet,
-          (-this.w / 4) * canvasScale,
+          - this.w / 4,
           0,
-          this.w / 2 * canvasScale,
-          this.h * canvasScale,
+          this.w / 2,
+          this.h,
           this.leftFrameIndex * this.w,
           0,
           this.w / 2,
@@ -248,10 +265,10 @@ class FaceShape {
 
     // Right eye
     image(this.spriteSheet,
-          (this.w / 4 - .5) * canvasScale,
+          this.w / 4 - .75,
           0,
-          this.w / 2  * canvasScale,
-          this.h * canvasScale,
+          this.w / 2,
+          this.h,
           this.rightFrameIndex * this.w + this.w / 2,
           0,
           this.w / 2,
@@ -268,8 +285,8 @@ class SmokeShape {
     this.xOffset = xOffset;
     this.yOffset = yOffset;
 
-    this.x = characterX + this.xOffset * canvasScale;
-    this.y = characterY + this.yOffset * canvasScale;
+    this.x = characterX + this.xOffset;
+    this.y = characterY + this.yOffset;
 
     this.spriteSheet = spriteSheet;
     this.frameAmount = frameAmount;
@@ -288,6 +305,7 @@ class SmokeShape {
 
     // Collion filtering
     if (this.mouseCollide == true) {
+      // console.log(1);
       this.body.collisionFilter = {
         category: objectCategory,
         mask: mouseCategory
@@ -303,8 +321,8 @@ class SmokeShape {
   // Moving logic
   move() {
     // Updates the position of the shape
-    this.x = characterX + this.xOffset * canvasScale;
-    this.y = characterY + this.yOffset * canvasScale;
+    this.x = characterX + this.xOffset;
+    this.y = characterY + this.yOffset;
 
     // Applies force to the body
     var force = sin(cycle) * this.angleScale;
@@ -333,10 +351,10 @@ class SmokeShape {
       strokeWeight(1);
       stroke(color(0, 255, 0));
       rectMode(CENTER);
-      quad((this.body.vertices[1].x - pos.x) * canvasScale, (this.body.vertices[1].y - pos.y) * canvasScale,
-           (this.body.vertices[2].x - pos.x) * canvasScale, (this.body.vertices[2].y - pos.y) * canvasScale,
-           (this.body.vertices[3].x - pos.x) * canvasScale, (this.body.vertices[3].y - pos.y) * canvasScale,
-           (this.body.vertices[0].x - pos.x) * canvasScale, (this.body.vertices[0].y - pos.y) * canvasScale);
+      quad(this.body.vertices[1].x - pos.x, this.body.vertices[1].y - pos.y,
+           this.body.vertices[2].x - pos.x, this.body.vertices[2].y - pos.y,
+           this.body.vertices[3].x - pos.x, this.body.vertices[3].y - pos.y,
+           this.body.vertices[0].x - pos.x, this.body.vertices[0].y - pos.y);
       pop();
     }
 
@@ -348,8 +366,8 @@ class SmokeShape {
     image(this.spriteSheet,
           0,
           0,
-          this.w * canvasScale,
-          this.h * canvasScale,
+          this.w,
+          this.h,
           this.frameIndex * this.w,
           0,
           this.w,
@@ -364,10 +382,10 @@ class Eyeballs {
     this.xOffset = xOffset;
     this.yOffset = yOffset;
 
-    this.x = characterX + this.xOffset * canvasScale;
-    this.y = characterY + this.yOffset * canvasScale;
+    this.x = characterX + this.xOffset;
+    this.y = characterY + this.yOffset;
 
-    this.r = 50 * canvasScale;
+    this.r = 50;
     this.angleScale = 0;
     this.body = Bodies.circle(this.x, this.y, this.r);
 
@@ -381,8 +399,8 @@ class Eyeballs {
   // Moving logic
   move() {
     // Updates the position of the shape
-    // this.x = characterX + this.xOffset * canvasScale;
-    // this.y = characterY + this.yOffset * canvasScale;
+    this.x = characterX + this.xOffset;
+    this.y = characterY + this.yOffset;
 
     // Applies force to the body
     var force = sin(cycle) * this.angleScale;
@@ -402,9 +420,9 @@ class Eyeballs {
       strokeWeight(1);
       stroke(color(0, 255, 0));
       rotate(angle -.3);
-      ellipse(-50 * canvasScale, -30 * canvasScale, this.r * canvasScale, this.r * .6 * canvasScale);
+      ellipse(-50, -30, this.r, this.r * .6);
       rotate(.3);
-      ellipse(40 * canvasScale, -30 * canvasScale, this.r * canvasScale, this.r * .6 * canvasScale);
+      ellipse(40, -30, this.r, this.r * .6);
       noFill();
       strokeWeight(1);
       rectMode(CORNERS);
@@ -416,31 +434,20 @@ class Eyeballs {
     fill(255)
     translate(pos.x, pos.y);
     rotate(angle -.3);
-    ellipse(-50 * canvasScale, -30 * canvasScale, this.r, this.r * .6);
+    ellipse(-50, -30, this.r, this.r * .6);
     rotate(.3);
-    ellipse(40 * canvasScale, -30 * canvasScale, this.r, this.r * .6);
+    ellipse(40, -30, this.r, this.r * .6);
     pop();
     push();
-    var mouseLocationX1;
-    var mouseLocationX2;
-    var mouseLocationY1;
-    var mouseLocationY2;
+    var mouseLocationX1 = map(mouseX, 0, width, this.x - 4, this.x + 7);
+    var mouseLocationX2 = map(mouseX, 0, width, this.x - 5, this.x + 10);
 
-    // if (canvas.width > minCanvasWidth * 1.25) {2
-      mouseLocationX1 = map(mouseX, 0, canvas.width, (pos.x + 40 * canvasScale), (pos.x + 52 * canvasScale));
-      mouseLocationX2 = map(mouseX, 0, canvas.width, (pos.x - 60 * canvasScale), (pos.x - 40 * canvasScale));// * canvasScale;
-      mouseLocationY1 = map(mouseY, 0, canvas.height, (pos.y - 35 * canvasScale), (pos.y - 31 * canvasScale));// * canvasScale;
-      mouseLocationY2 = map(mouseY, 0, canvas.height, (pos.y - 23 * canvasScale), (pos.y - 19 * canvasScale));// * canvasScale;;
-    // } else {
-    //   mouseLocationX1 = this.x + canvas.width * .095;
-    //   mouseLocationX2 = this.x - canvas.width * .01;
-    //
-    //   mouseLocationY1 = this.y - canvas.height * .085;
-    //   mouseLocationY2 = this.y - canvas.height * .0725;
-    // }
+    var mouseLocationY1 = map(mouseY, 0, height, this.y - 4, this.y + 4);
+    var mouseLocationY2 = map(mouseY, 0, height, this.y - 2 , this.y + 7);
+
     fill(color(35, 31, 32));
-    ellipse(mouseLocationX1, mouseLocationY1, 5 * canvasScale, 6 * canvasScale);
-    ellipse(mouseLocationX2, mouseLocationY2, 5 * canvasScale, 6 * canvasScale);
+    ellipse(mouseLocationX1 + 84, mouseLocationY1 - 75, 5, 6);
+    ellipse(mouseLocationX2 - 13, mouseLocationY2 - 63, 5, 6);
     pop();
 
   }

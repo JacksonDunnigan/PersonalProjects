@@ -2,20 +2,15 @@
 
 "use strict";
 
-// Constant variables
+// World variables
 const delta = 1000 / 60;
 const subSteps = 2;
 const subDelta = delta / subSteps;
 const debug = false;
-const maxCanvasWidth = 1800;
-const minCanvasWidth = 300;
-const maxCanvasHeight = 1000;
-const minCanvasHeight = 400;
+const initialCanvasSize = window.innerWidth*.6;
 
-// Variables
-let initialCanvasWidth;
-let initialCanvasHeight;
-let canvasScale;
+let canvasScale = 1;
+let characterGraphics;
 let world;
 let canvas;
 let click = false;
@@ -25,8 +20,8 @@ let holdingConstraint = null;
 let character;
 let characterX;
 let characterY;
-let characterXScale = -330;
-let characterYScale = -270;
+
+
 
 // Control variables
 let scrollDelta = 0;
@@ -116,18 +111,12 @@ function preload() {
 
 // Sets up the canvas
 function setup() {
-  // Assigns new values for width and height variables
-  initialCanvasWidth = max(min(window.innerWidth, maxCanvasWidth), minCanvasWidth);
-  initialCanvasHeight = max(min(window.innerHeight, maxCanvasHeight), minCanvasHeight);
-
-  // Resizes the canvas
-  canvas = createCanvas(initialCanvasWidth, initialCanvasHeight);
-  canvasScale = min(initialCanvasWidth / ((minCanvasWidth + maxCanvasWidth) / 2),
-                    initialCanvasHeight / ((minCanvasHeight + maxCanvasHeight) / 2));
-
-  // Updates the character position
-  characterX = (canvas.width / 2) + characterXScale * canvasScale;
-  characterY = (canvas.height / 2) + characterYScale * canvasScale;
+  canvas = createCanvas(initialCanvasSize, initialCanvasSize);
+  characterX = initialCanvasSize *.125 * canvasScale;
+  characterY = initialCanvasSize *.21 * canvasScale;
+  characterGraphics = createGraphics(width, height);
+  characterGraphics.background(255);
+  // pixelDensity(1);
 
   // Creates an engine
   var engineOptions = {
@@ -157,7 +146,7 @@ function setup() {
   world.gravity.y = 0;
 
   // Creates static objects
-  character = new Character(characterX, characterY);
+  character = new Character();
 
   // Creates the mouse for interaction
   mouse = Mouse.create(canvas.elt);
@@ -186,26 +175,25 @@ function mouseWheel(event) {
   scrollDelta = event.delta / abs(event.delta)
 }
 
-// Resizings
+// Resizing
 function windowResized() {
-  // Assigns new values for width and height variables
-  var newCanvasWidth = max(min(window.innerWidth, maxCanvasWidth), minCanvasWidth);
-  var newCanvasHeight = max(min(window.innerHeight, maxCanvasHeight), minCanvasHeight);
-
-  // Resizes characters
-  resizeCanvas(newCanvasWidth, newCanvasHeight);
-  canvasScale = min(newCanvasWidth / ((minCanvasWidth + maxCanvasWidth) / 2),
-                    newCanvasHeight / ((minCanvasHeight + maxCanvasHeight) / 2));
-
+  // assigns new values for width and height variables
+  var newSize = min(2 * window.innerWidth / 3, 900);
+  // resizeCanvas(newSize, newSize);
+  canvasScale = (newSize / initialCanvasSize);
 
   // Updates the character position
-  characterX = (canvas.width / 2) + characterXScale * canvasScale;
-  characterY = (canvas.height / 2) + characterYScale * canvasScale;
+  // characterX = initialCanvasSize *.125 * canvasScale;
+  // characterY = initialCanvasSize *.21 * canvasScale;
 
   // Updates the constraints
-  character.clearBody();
-  character = null;
-  character = new Character(characterX, characterY);
+  // for (var i = 0; i < character.constraintList.length; i++) {
+  //   var constraintData = character.constraintList[i]
+  //   var currentConstraint = constraintData[0];
+  //   currentConstraint.pointA = {x: constraintData[1].x * canvasScale, y: constraintData[1].y * canvasScale};
+  //   currentConstraint.pointB = {x: constraintData[2].x * canvasScale , y: constraintData[2].y * canvasScale};
+  //
+  // }
 }
 
 // Plays a sound
@@ -216,25 +204,48 @@ function playSound(sound) {
 
 // Runs the program
 function draw() {
+  // console.log(canvasScale);
   background(255);
   noStroke();
   simulation();
+
 }
 
 // Runs the simulation
 function simulation() {
-  frameRate(60);
-  if (debug == true) {
-    push();
-    stroke(0, 255, 0);
-    strokeWeight(5);
-    noFill();
-    rect(0, 0, canvas.width, canvas.height);
-    pop();
-  }
 
+
+  frameRate(60);
+  // if (debug == true) {
+  //   push();
+  //   stroke(0, 255, 0);
+  //   strokeWeight(5);
+  //   noFill();
+  //   rect(0, 0, canvas.width, canvas.height);
+  //   pop();
+  // }
+  // characterGraphics.clear();
+  characterGraphics.clear();
   // Controls cycles
   cycle += cycleRate;
   character.move();
   character.display();
+
+  // Graphics
+  var canvasImage = createImage(width * pixelDensity(), height * pixelDensity());
+      canvasImage.copy(canvas, 0, 0, width, height, 0, 0, width * pixelDensity(), height * pixelDensity());
+
+  characterGraphics.image(canvasImage, 0, 0);
+  // characterGraphics.copy(
+  //   // source
+  //   canvas,
+  //   // source x, y, w, h
+  //   0, 0, width, height,
+  //   // destination x, y, w, h
+  //   0, 0, characterGraphics.width, characterGraphics.height);
+  //
+
+  // characterGraphics.image(c,0,0);
+  image(characterGraphics, 0, 0, width * canvasScale, height * canvasScale);
+
 }

@@ -1,11 +1,10 @@
 // Character
 class Character {
-  constructor(x, y) {
-
+  constructor() {
 
     // Size variables
-    this.x = x;
-    this.y = y;
+    this.x = windowWidth *.29;
+    this.y = windowHeight * .15;
 
     // Creates the shapes
     this.partBody = new Shape(380, 200, sprBody, true, false, 0);
@@ -36,12 +35,12 @@ class Character {
          visible: true
        },
        pointA: {
-           x: 24 * canvasScale,
-           y: -32 * canvasScale
+           x: 24,
+           y: -32
        },
        pointB: {
-           x: 20 * canvasScale,
-           y: -60 * canvasScale
+           x: 20,
+           y: -60
        },
        bodyB: this.partBoob.body,
        length: 0,
@@ -58,12 +57,12 @@ class Character {
           visible: true
         },
         pointA: {
-            x: -85 * canvasScale,
-            y: 10 * canvasScale
+            x: -85,
+            y: 10
         },
         pointB: {
-            x: 75 * canvasScale,
-            y: -55 * canvasScale
+            x: 75,
+            y: -55
         },
         bodyB: this.partFace.body,
         length: 0,
@@ -80,8 +79,8 @@ class Character {
            visible: true
          },
          pointA: {
-             x: 20 * canvasScale,
-             y: -40 * canvasScale
+             x: 20,
+             y: -40
          },
          pointB: {
              x: 0,
@@ -102,12 +101,12 @@ class Character {
          visible: true
         },
         pointA: {
-           x: -87 * canvasScale,
-           y: 80 * canvasScale
+           x: -87,
+           y: 80
         },
         pointB: {
-           x: 90 * canvasScale,
-           y: 165 * canvasScale
+           x: 90,
+           y: 165
         },
         bodyB: this.partSmoke.body,
         length: 0,
@@ -124,12 +123,12 @@ class Character {
           visible: true
         },
         pointA: {
-            x: -110 * canvasScale,
-            y: 90 * canvasScale
+            x: -110,
+            y: 90
         },
         pointB: {
-            x: -60 * canvasScale,
-            y: -50 * canvasScale
+            x: -60,
+            y: -50
         },
         bodyB: this.partLeg.body,
         length: 0,
@@ -146,12 +145,12 @@ class Character {
            visible: true
          },
          pointA: {
-             x: 100 * canvasScale,
-             y: 40 * canvasScale
+             x: 100,
+             y: 40
          },
          pointB: {
-             x: 105 * canvasScale,
-             y: -98 * canvasScale
+             x: 105,
+             y: -98
          },
          bodyB: this.partThigh.body,
          length: 0,
@@ -168,12 +167,12 @@ class Character {
           visible: true
         },
         pointA: {
-            x: -110 * canvasScale,
-            y: 90 * canvasScale
+            x: -110,
+            y: 90
         },
         pointB: {
-            x: -60 * canvasScale,
-            y: -50 * canvasScale
+            x: -60,
+            y: -50
         },
         bodyB: this.partLeg.body,
         length: 0,
@@ -190,12 +189,12 @@ class Character {
            visible: true
          },
          pointA: {
-             x: 55 * canvasScale,
-             y: 50 * canvasScale
+             x: 55,
+             y: 50
          },
          pointB: {
-             x: -10 * canvasScale,
-             y: 60 * canvasScale
+             x: -10,
+             y: 60
          },
          bodyB: this.partAnkel.body,
          length: 0,
@@ -212,12 +211,12 @@ class Character {
            visible: true
          },
          pointA: {
-             x: 20 * canvasScale,
-             y: -30 * canvasScale
+             x: 20,
+             y: -30
          },
          pointB: {
-             x: -50 * canvasScale,
-             y: 15 * canvasScale
+             x: -50,
+             y: 15
          },
          bodyB: this.partFoot1.body,
          length: 0,
@@ -234,12 +233,12 @@ class Character {
            visible: true
          },
          pointA: {
-             x: 20 * canvasScale,
-             y: -30 * canvasScale
+             x: 20,
+             y: -30
          },
          pointB: {
-             x: -50 * canvasScale,
-             y: 15 * canvasScale
+             x: -50,
+             y: 15
          },
          bodyB: this.partFoot2.body,
          length: 0,
@@ -256,12 +255,12 @@ class Character {
            visible: true
          },
          pointA: {
-             x: 80 * canvasScale,
+             x: 80,
              y: 0
          },
          pointB: {
-             x: -80 * canvasScale,
-             y: 105 * canvasScale
+             x: -80,
+             y: 105
          },
          bodyB: this.partRightForearm.body,
          length: 0,
@@ -279,11 +278,11 @@ class Character {
            },
            pointA: {
                x: 0,
-               y: -35 * canvasScale
+               y: -35
            },
            pointB: {
-               x: -40 * canvasScale,
-               y: -30 * canvasScale
+               x: -40,
+               y: -30
            },
            bodyB: this.partLeftForearm.body,
            length: 0,
@@ -300,12 +299,12 @@ class Character {
              visible: true
            },
            pointA: {
-               x: 30 * canvasScale,
-               y: 30 * canvasScale
+               x: 30,
+               y: 30
            },
            pointB: {
-               x: -105 * canvasScale,
-               y: 40 * canvasScale
+               x: -105,
+               y: 40
            },
            bodyB: this.partLeftWrist.body,
            length: 0,
@@ -360,29 +359,16 @@ class Character {
      }
   }
 
-  // Clears the body
-  clearBody() {
-    for (var i = 0; i < this.constraintList.length; i++) {
-      World.remove(world, this.constraintList[i]);
-      this.constraintList[i] = null;
-    }
-    for (var i = 0; i < this.bodyList.length; i++) {
-      World.remove(world, this.bodyList[i].body);
-      this.bodyList[i] = null;
-    }
-  }
-
   // Updates physics for every body part
   move() {
-
-    characterX = canvas.width * characterXScale * canvasScale;
-    characterY = canvas.height * characterYScale * canvasScale;
-
-    this.x = characterX;
-    this.y = characterY;
+    // Size variables
+    this.x = windowWidth *.29;
+    this.y = windowHeight * .15;
 
     for (var i = 0; i < this.bodyList.length; i++) {
+
       this.bodyList[i].move();
+
     }
   }
 
@@ -400,10 +386,8 @@ class Character {
         push();
         stroke(0, 255, 0);
         strokeWeight(4);
-        line(this.constraintList[i].bodyA.position.x + this.constraintList[i].pointA.x,
-             this.constraintList[i].bodyA.position.y + this.constraintList[i].pointA.y,
-             this.constraintList[i].bodyB.position.x + this.constraintList[i].pointB.x,
-             this.constraintList[i].bodyB.position.y + this.constraintList[i].pointB.y);
+        line(this.constraintList[i].bodyA.position.x + this.constraintList[i].pointA.x, this.constraintList[i].bodyA.position.y + this.constraintList[i].pointA.y,
+             this.constraintList[i].bodyB.position.x + this.constraintList[i].pointB.x, this.constraintList[i].bodyB.position.y + this.constraintList[i].pointB.y);
         pop();
       }
     }
