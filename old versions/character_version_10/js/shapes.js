@@ -49,7 +49,6 @@ class Shape {
     // Creates a constraint when holding a joint
     if (holdingConstraint == null
       && this.mouseCollide == true
-      && canvas.width > maxCanvasWidth * 0.65
       && mouseDown == true
       && Bounds.contains(this.bounds, mouse.position)) {
       holdingConstraint = Constraint.create({
@@ -325,6 +324,7 @@ class SmokeShape {
         this.frameIndex = 0;
       }
     }
+
     // Draws background shapes for debugging
     if (debug == true) {
       push();
@@ -380,10 +380,6 @@ class Eyeballs {
 
   // Moving logic
   move() {
-    // Updates the position of the shape
-    // this.x = characterX + this.xOffset * canvasScale;
-    // this.y = characterY + this.yOffset * canvasScale;
-
     // Applies force to the body
     var force = sin(cycle) * this.angleScale;
     Body.setAngularVelocity(this.body, force)
@@ -426,18 +422,11 @@ class Eyeballs {
     var mouseLocationY1;
     var mouseLocationY2;
 
-    // if (canvas.width > minCanvasWidth * 1.25) {2
-      mouseLocationX1 = map(mouseX, 0, canvas.width, (pos.x + 40 * canvasScale), (pos.x + 52 * canvasScale));
-      mouseLocationX2 = map(mouseX, 0, canvas.width, (pos.x - 60 * canvasScale), (pos.x - 40 * canvasScale));// * canvasScale;
-      mouseLocationY1 = map(mouseY, 0, canvas.height, (pos.y - 35 * canvasScale), (pos.y - 31 * canvasScale));// * canvasScale;
-      mouseLocationY2 = map(mouseY, 0, canvas.height, (pos.y - 23 * canvasScale), (pos.y - 19 * canvasScale));// * canvasScale;;
-    // } else {
-    //   mouseLocationX1 = this.x + canvas.width * .095;
-    //   mouseLocationX2 = this.x - canvas.width * .01;
-    //
-    //   mouseLocationY1 = this.y - canvas.height * .085;
-    //   mouseLocationY2 = this.y - canvas.height * .0725;
-    // }
+    mouseLocationX1 = map(mouseX, 0, canvas.width, (pos.x + 40 * canvasScale), (pos.x + 52 * canvasScale));
+    mouseLocationX2 = map(mouseX, 0, canvas.width, (pos.x - 60 * canvasScale), (pos.x - 40 * canvasScale));
+    mouseLocationY1 = map(mouseY, 0, canvas.height, (pos.y - 35 * canvasScale), (pos.y - 31 * canvasScale));
+    mouseLocationY2 = map(mouseY, 0, canvas.height, (pos.y - 23 * canvasScale), (pos.y - 19 * canvasScale));
+
     fill(color(35, 31, 32));
     ellipse(mouseLocationX1, mouseLocationY1, 5 * canvasScale, 6 * canvasScale);
     ellipse(mouseLocationX2, mouseLocationY2, 5 * canvasScale, 6 * canvasScale);

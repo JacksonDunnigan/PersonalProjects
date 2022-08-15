@@ -1,7 +1,6 @@
 
 
 "use strict";
-document.body.style.overflow = 'hidden';
 
 // Constant variables
 const delta = 1000 / 60;
@@ -11,10 +10,9 @@ const debug = false;
 
 // Change this to the size being defined in setup and updates every time the window is resized
 const maxCanvasWidth = 1800;
-// const minCanvasWidth = 300;
+const minCanvasWidth = 300;
 const maxCanvasHeight = 1000;
-// const minCanvasHeight = 400;
-const canvasScaleModifier = 1.5;
+const minCanvasHeight = 400;
 
 // Variables
 let initialCanvasWidth;
@@ -29,7 +27,7 @@ let holdingConstraint = null;
 let character;
 let characterX;
 let characterY;
-let characterXScale = -310;
+let characterXScale = -330;
 let characterYScale = -270;
 
 // Control variables
@@ -121,16 +119,13 @@ function preload() {
 // Sets up the canvas
 function setup() {
   // Assigns new values for width and height variables
-  // initialCanvasWidth = max(min(window.innerWidth, maxCanvasWidth), minCanvasWidth);
-  // initialCanvasHeight = max(min(window.innerHeight, maxCanvasHeight), minCanvasHeight);
-  initialCanvasWidth = min(window.innerWidth, maxCanvasWidth);
-  initialCanvasHeight = min(window.innerHeight, maxCanvasHeight);
+  initialCanvasWidth = max(min(window.innerWidth, maxCanvasWidth), minCanvasWidth);
+  initialCanvasHeight = max(min(window.innerHeight, maxCanvasHeight), minCanvasHeight);
 
   // Resizes the canvas
   canvas = createCanvas(initialCanvasWidth, initialCanvasHeight);
-  // canvasScale = min(initialCanvasWidth / ((minCanvasWidth + maxCanvasWidth) / 2),
-  //                   initialCanvasHeight / ((minCanvasHeight + maxCanvasHeight) / 2));
-  canvasScale = min(initialCanvasWidth / maxCanvasWidth, initialCanvasHeight / maxCanvasHeight) * canvasScaleModifier;
+  canvasScale = min(initialCanvasWidth / ((minCanvasWidth + maxCanvasWidth) / 2),
+                    initialCanvasHeight / ((minCanvasHeight + maxCanvasHeight) / 2));
 
   // Updates the character position
   characterX = (canvas.width / 2) + characterXScale * canvasScale;
@@ -196,18 +191,16 @@ function mouseWheel(event) {
 // Resizings
 function windowResized() {
   // Assigns new values for width and height variables
-  // var newCanvasWidth = max(min(window.innerWidth, maxCanvasWidth), minCanvasWidth);
-  // var newCanvasHeight = max(min(window.innerHeight, maxCanvasHeight), minCanvasHeight);
-  var newCanvasWidth = min(window.innerWidth, maxCanvasWidth);
-  var newCanvasHeight = min(window.innerHeight, maxCanvasHeight);
+  var newCanvasWidth = max(min(window.innerWidth, maxCanvasWidth), minCanvasWidth);
+  var newCanvasHeight = max(min(window.innerHeight, maxCanvasHeight), minCanvasHeight);
 
   // Resizes characters
   resizeCanvas(newCanvasWidth, newCanvasHeight);
   // canvasScale = min(newCanvasWidth / ((minCanvasWidth + maxCanvasWidth) / 2),
   //                   newCanvasHeight / ((minCanvasHeight + maxCanvasHeight) / 2));
-  // canvasScale = min(newCanvasWidth / ((minCanvasWidth + maxCanvasWidth) / 2),
-  //                   newCanvasHeight / ((minCanvasHeight + maxCanvasHeight) / 2));
-  canvasScale = min(newCanvasWidth / maxCanvasWidth, newCanvasHeight / maxCanvasHeight) * canvasScaleModifier;
+  canvasScale = min(newCanvasWidth / ((minCanvasWidth + maxCanvasWidth) / 2),
+                    newCanvasHeight / ((minCanvasHeight + maxCanvasHeight) / 2));
+
 
   // Updates the character position
   characterX = (canvas.width / 2) + characterXScale * canvasScale;

@@ -7,6 +7,8 @@ const delta = 1000 / 60;
 const subSteps = 2;
 const subDelta = delta / subSteps;
 const debug = false;
+
+// Change this to the size being defined in setup and updates every time the window is resized
 const maxCanvasWidth = 1800;
 const minCanvasWidth = 300;
 const maxCanvasHeight = 1000;
@@ -194,6 +196,8 @@ function windowResized() {
 
   // Resizes characters
   resizeCanvas(newCanvasWidth, newCanvasHeight);
+  // canvasScale = min(newCanvasWidth / ((minCanvasWidth + maxCanvasWidth) / 2),
+  //                   newCanvasHeight / ((minCanvasHeight + maxCanvasHeight) / 2));
   canvasScale = min(newCanvasWidth / ((minCanvasWidth + maxCanvasWidth) / 2),
                     newCanvasHeight / ((minCanvasHeight + maxCanvasHeight) / 2));
 
